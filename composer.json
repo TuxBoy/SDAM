@@ -1,0 +1,29 @@
+{
+    "name": "tuxboy/auto-migrate",
+    "authors": [
+        {
+            "name": "TuxBoy",
+            "email": "benoit.mallo@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "TuxBoy\\": "src/Migration"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "UnitTest\\": "tests/"
+        }
+    },
+    "require": {
+        "php-di/phpdoc-reader": "^2.1",
+        "icanboogie/inflector": "^1.4",
+        "doctrine/dbal": "^2.7"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^4.1",
+        "phpunit/phpunit": "^7.2"
+    }
+}
