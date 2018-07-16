@@ -1,10 +1,11 @@
 # Migration 
 
-Manage the database migrations for your PHP app
+Manage the database migrations for your PHP app, this library was made for your migration to be launched
+automatically in your application
 
 ## Installation
 
-```json
+````json
 
     "require": {
         "tuxboy/migration": "dev-master",
@@ -15,7 +16,7 @@ Manage the database migrations for your PHP app
             "url":  "git@github.com:tuxboy/migration.git"
         }
     ],
-```
+````
 
 ## How to use it
 
