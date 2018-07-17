@@ -5,8 +5,15 @@ class Post
 {
 
     /**
+     * @default defaultName
+     * @length 255
      * @var string
      */
     public $name;
+
+    /**
+     * @var boolean
+     */
+    public $draft;
 
 }

@@ -45,6 +45,6 @@ $app->pipe($maintainer);
 
 Middleware are constructed with these parameters
 
-* Entities list, string array
-* $config, string array
+* Entities list, **string[]**
+* $config, **string[]**
 

@@ -55,7 +55,7 @@ class Maintainer
     public function __construct(array $entities = [])
     {
         $this->entities    = $entities;
-        $this->entity_path = Config::current()->params[Config::ENTITY_PATH];
+        $this->entity_path = Config::current()->params[Config::ENTITY_PATH] ?? 'App\Entity';
         try {
             $this->connection    = $this->connect();
             $this->schemaManager = $this->connection->getSchemaManager();
@@ -173,7 +173,7 @@ class Maintainer
     private function connect(): Connection
     {
         $config = new Configuration();
-        $params = Config::current()->params[Config::DATABASE];
+        $params = Config::current()->params[Config::DATABASE] ?? ['url' => 'sqlite:///:memory:'];
         return DriverManager::getConnection($params, $config);
     }
 
