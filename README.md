@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/TuxBoy/Migration.svg?branch=master)](https://travis-ci.org/TuxBoy/Migration)
+
 # Migration 
 
 Manage the database migrations for your PHP app, this library was made for your migration to be launched
