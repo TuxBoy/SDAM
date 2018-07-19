@@ -5,6 +5,8 @@
 Manage the database migrations for your PHP app, this library was made for your migration to be launched
 automatically in your application
 
+Il y une démo d'utilisation [ici](https://github.com/TuxBoy/Migration-demo)
+
 ## Installation
 
 ````json
