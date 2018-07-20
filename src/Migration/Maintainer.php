@@ -115,7 +115,7 @@ class Maintainer
                 ) {
                     $relationMethod = Annotation::of($entity, $propertyName)->getAnnotation('link')->getValue();
                     $this->$relationMethod($schema, $table, $typeField);
-                } else {
+                } else if (!$this->isClass($typeField)) {
                     $this->addNormalColumn($typeField, $entity, $table, $property);
                 }
             }
@@ -130,6 +130,15 @@ class Maintainer
                 }
             }
         }
+    }
+
+    /**
+     * @param string $field
+     * @return boolean
+     */
+    public function isClass(string $field): bool
+    {
+        return class_exists($field);
     }
 
     /**
