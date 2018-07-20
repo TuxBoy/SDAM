@@ -266,7 +266,6 @@ class Maintainer
      */
     public function classToForeignKey(string $className): string
     {
-        // $class = new ReflectionClass($className);
         return mb_strtolower($className) . '_id';
     }
 
