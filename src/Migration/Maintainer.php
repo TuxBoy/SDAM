@@ -180,18 +180,6 @@ class Maintainer
     }
 
     /**
-     * Créé une nouelle table
-     *
-     * @param string $tableName
-     * @return Table
-     */
-    private function createTable(Schema $schema, string $tableName): Table
-    {
-        $table = $schema->createTable($tableName);
-        return $table;
-    }
-
-    /**
      * @param string $typeField
      * @param string $entity
      * @param Table $table
