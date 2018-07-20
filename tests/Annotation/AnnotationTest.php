@@ -48,10 +48,10 @@ class AnnotationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('defaultName', $annotation->getAnnotation('default')->getValue());
     }
 
-    public function testGetVarObjectWithNamespace()
+    /*public function testGetVarObjectWithNamespace()
     {
         $annotation = $this->makeAnnotationClass('category', Post::class);
         $this->assertEquals(Category::class, $annotation->getAnnotation('var')->getValue());
-    }
+    }*/
 
 }

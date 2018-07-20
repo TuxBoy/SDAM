@@ -160,7 +160,7 @@ class Annotation
      */
     public function getValue(): ?string
     {
-        return $this->reader->getPropertyClass($this->argument->getProperty($this->propertyName)) ?? $this->value;
+        return $this->value;
     }
 
     /**
