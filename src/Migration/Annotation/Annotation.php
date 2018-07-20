@@ -3,6 +3,7 @@
 namespace TuxBoy\Annotation;
 
 use Exception;
+use PhpDocReader\PhpDocReader;
 use ReflectionClass;
 use ReflectionException;
 
@@ -37,6 +38,11 @@ class Annotation
     private $propertyName;
 
     /**
+     * @var PhpDocReader
+     */
+    private $reader;
+
+    /**
      * Annotation constructor
      *
      * @param string|ReflectionClass $argument Le nom de la classe ou l'object que l'on souhaite récupérer les annotations
@@ -47,6 +53,7 @@ class Annotation
     {
         $this->argument     = is_string($argument) ? new ReflectionClass($argument) : $argument;
         $this->propertyName = $propertyName;
+        $this->reader       = new PhpDocReader();
         // Si le property_name est null, alors on souhaite obtenir les annotations de la classe
         $this->docComment = null === $this->propertyName
             ? $this->argument->getDocComment()
@@ -149,10 +156,11 @@ class Annotation
      * Récupère la valeur de l'anotation s'il y en a une.
      *
      * @return null|string
+     * @throws \PhpDocReader\AnnotationException
      */
     public function getValue(): ?string
     {
-        return $this->value;
+        return $this->reader->getPropertyClass($this->argument->getProperty($this->propertyName)) ?? $this->value;
     }
 
     /**

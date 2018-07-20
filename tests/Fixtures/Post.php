@@ -16,4 +16,10 @@ class Post
      */
     public $draft;
 
+    /**
+     * @link belongsTo
+     * @var Category
+     */
+    public $category;
+
 }

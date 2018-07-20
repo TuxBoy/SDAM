@@ -2,6 +2,7 @@
 namespace UnitTest\Annotation;
 
 use TuxBoy\Annotation\Annotation;
+use UnitTest\Fixtures\Category;
 use UnitTest\Fixtures\Post;
 
 class AnnotationTest extends \PHPUnit\Framework\TestCase
@@ -45,6 +46,12 @@ class AnnotationTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($annotation->hasAnnotation('default'));
         $this->assertEquals('default', $annotation->getAnnotation('default')->getName());
         $this->assertEquals('defaultName', $annotation->getAnnotation('default')->getValue());
+    }
+
+    public function testGetVarObjectWithNamespace()
+    {
+        $annotation = $this->makeAnnotationClass('category', Post::class);
+        $this->assertEquals(Category::class, $annotation->getAnnotation('var')->getValue());
     }
 
 }

@@ -96,6 +96,7 @@ class Maintainer
      *
      * @throws DBALException
      * @throws ReflectionException
+     * @throws \PhpDocReader\AnnotationException
      */
     public function run(): void
     {
@@ -139,6 +140,7 @@ class Maintainer
      * @param array $annotations
      * @return string[]
      * @throws ReflectionException
+     * @throws \PhpDocReader\AnnotationException
      */
     private function addOptions(ReflectionProperty $property, string $entity, array $annotations): array
     {
@@ -195,6 +197,7 @@ class Maintainer
      * @param Table $table
      * @param ReflectionProperty $property
      * @throws ReflectionException
+     * @throws \PhpDocReader\AnnotationException
      */
     private function addNormalColumn(string $typeField, string $entity, Table $table, ReflectionProperty $property): void
     {
@@ -225,7 +228,7 @@ class Maintainer
      */
     public function belongsTo(Schema $schema, Table $table, string $className): string
     {
-        $field = mb_strtolower($className) . '_id';
+        $field = $this->classToForeignKey($className);
         if ($this->isForeignKey($field) && !$table->hasColumn($field)) {
             // Récupère la table sur la quelle la clé étrangère fait référence
             $foreignTable = $this->getTableName($schema, $className);
@@ -257,6 +260,17 @@ class Maintainer
     private function isForeignKey(string $field): bool
     {
         return (bool) (mb_substr($field, -3) === '_id');
+    }
+
+    /**
+     * @param string $className
+     * @return string l'équivalent du nom de la classe passé en paramètre en clé étrangère (Category => category_id)
+     * @throws ReflectionException
+     */
+    public function classToForeignKey(string $className): string
+    {
+        $class = new ReflectionClass($className);
+        return mb_strtolower($class->getShortName()) . '_id';
     }
 
 }
