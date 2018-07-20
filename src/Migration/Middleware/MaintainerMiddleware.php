@@ -3,6 +3,7 @@ namespace TuxBoy\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TuxBoy\Config;
 use TuxBoy\Maintainer;
 
 /**
@@ -27,17 +28,17 @@ class MaintainerMiddleware
      */
     public function __construct(array $entities, array $config = [])
     {
-        $defaultConfig = array_merge($config, [
-            \TuxBoy\Config::DATABASE => [
+        $defaultConfig = array_merge([
+            Config::DATABASE => [
                 'dbname'   => 'autoMigrate',
                 'user'     => 'root',
                 'password' => 'root',
                 'host'     => 'localhost',
                 'driver'   => 'pdo_mysql',
             ],
-            \TuxBoy\Config::ENTITY_PATH => 'App\Model\\'
-        ]);
-        \TuxBoy\Config::current()->configure($defaultConfig);
+            Config::ENTITY_PATH => 'App\Model\\'
+        ], $config);
+        Config::current()->configure($defaultConfig);
         $this->entities = $entities;
     }
 
@@ -48,6 +49,7 @@ class MaintainerMiddleware
      * @return ResponseInterface
      * @throws \Doctrine\DBAL\DBALException
      * @throws \ReflectionException
+     * @throws \PhpDocReader\AnnotationException
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
     {
