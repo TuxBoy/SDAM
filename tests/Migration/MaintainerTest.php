@@ -13,10 +13,10 @@ class MaintainerTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $maintainer->entities);
     }
 
-    public function testParseForeignKey()
+    /*public function testParseForeignKey()
     {
         $maintainer = new \TuxBoy\Maintainer([FakeEntity::class]);
         $this->assertEquals('category_id', $maintainer->classToForeignKey(Category::class));
-    }
+    }*/
 
 }
