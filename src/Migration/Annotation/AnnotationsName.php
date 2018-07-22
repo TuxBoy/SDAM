@@ -5,6 +5,8 @@ namespace TuxBoy\Annotation;
  * AnnotationsName
  *
  * Annotation list for the migration system in the entity
+ *
+ * Property annotations are prefixed by P_ and class annotation is prefixed by C_
  */
 abstract class AnnotationsName
 {
@@ -28,6 +30,13 @@ abstract class AnnotationsName
      * @length 60
      */
     const P_LENGTH = 'length';
+
+    /**
+     * Text value annotation for the relation type
+     *
+     * @link belongsTo
+     */
+    const P_LINK = 'link';
 
     /**
      * Text value annotation
