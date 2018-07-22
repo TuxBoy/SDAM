@@ -84,6 +84,7 @@ class Post
         
 }
 ```
+(*You can see the list of possible annotations in the class AnnotationsName*)
 
 Just start the migration, either by a simple F5 if you have it enabled in your application (middleware) or other.
 The table will be created in your database.
