@@ -1,6 +1,9 @@
 <?php
 namespace UnitTest\Fixtures;
 
+/**
+ * @storeName posts_test
+ */
 class Post
 {
 

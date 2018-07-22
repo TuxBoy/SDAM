@@ -11,13 +11,15 @@ class AnnotationTest extends \PHPUnit\Framework\TestCase
     /**
      * @param string $annotationName
      * @param string $entity
+     * @param bool $property
      * @return Annotation
      * @throws \ReflectionException
      */
-    private function makeAnnotationClass(string $annotationName, string $entity): Annotation
+    private function makeAnnotationClass(string $annotationName, string $entity, bool $property = true): Annotation
     {
-        $class = new \ReflectionClass($entity);
-        return new Annotation($class, $class->getProperty($annotationName)->getName());
+        $class        = new \ReflectionClass($entity);
+        $propertyName = $property ? $class->getProperty($annotationName)->getName() : null;
+        return new Annotation($class, $propertyName);
     }
 
     public function testGetVarAnnotationValue()
@@ -53,5 +55,13 @@ class AnnotationTest extends \PHPUnit\Framework\TestCase
         $annotation = $this->makeAnnotationClass('category', Post::class);
         $this->assertEquals(Category::class, $annotation->getAnnotation('var')->getValue());
     }*/
+
+    public function testGetClassAnnotation()
+    {
+        $annotation = $this->makeAnnotationClass('storeName', Post::class, false);
+        $this->assertTrue($annotation->hasAnnotation('storeName'));
+        $this->assertEquals('storeName', $annotation->getAnnotation('storeName')->getName());
+        $this->assertEquals('posts_test', $annotation->getAnnotation('storeName')->getValue());
+    }
 
 }
