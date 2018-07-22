@@ -52,3 +52,38 @@ Middleware are constructed with these parameters
 * Entities list, **string[]**
 * $config, **string[]**
 
+## Usage
+
+Create your Entity class, Post entity for example :
+
+```php
+namespace App\Entity;
+
+/**
+ * Post
+ */
+class Post
+{
+
+    /**
+     * @length 60
+     * @var string
+     */
+    public $name;
+
+    /**
+     * @var string
+     */
+    public $slug;
+
+    /**
+     * @text
+     * @var string
+     */
+    public $content;
+        
+}
+```
+
+Just start the migration, either by a simple F5 if you have it enabled in your application (middleware) or other.
+The table will be created in your database.

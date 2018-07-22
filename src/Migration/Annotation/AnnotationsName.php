@@ -11,21 +11,24 @@ namespace TuxBoy\Annotation;
 abstract class AnnotationsName
 {
     /**
-     * Value annotation
+     * Value annotation, a basic field type :
+     * string : VARCHAR
+     * boolean : TINYINT
+     * integer : INT
      *
      * @var string|boolean
      */
     const P_VAR = 'var';
 
     /**
-     * Boolean annotation
+     * Boolean annotation, for the longtext field type
      *
      * @text
      */
     const P_TEXT = 'text';
 
     /**
-     * Integer annotation value
+     * Integer annotation value, set the size of the field in database
      *
      * @length 60
      */
@@ -39,7 +42,14 @@ abstract class AnnotationsName
     const P_LINK = 'link';
 
     /**
-     * Text value annotation
+     * Text value annotation, take as parameter the method to execute to define a default value in the field
+     *
+     * @default defaultMethod
+     */
+    const P_DEFAULT = 'default';
+
+    /**
+     * Text value annotation, the name of the table that will be created
      *
      * @storeName table_name
      */
