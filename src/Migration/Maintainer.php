@@ -118,12 +118,12 @@ class Maintainer
             $this->addPrimaryColumn($table);
             foreach ($reflectionClass->getProperties() as $property) {
                 $propertyName = $property->getName();
-                $typeField    = Annotation::of($entity, $propertyName)->getAnnotation('var')->getValue();
+                $typeField    = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_VAR)->getValue();
                 if (
-                    Annotation::of($entity, $propertyName)->hasAnnotation('link') &&
-                    method_exists($this, Annotation::of($entity, $propertyName)->getAnnotation('link')->getValue())
+                    Annotation::of($entity, $propertyName)->hasAnnotation(AnnotationsName::P_LINK) &&
+                    method_exists($this, Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue())
                 ) {
-                    $relationMethod = Annotation::of($entity, $propertyName)->getAnnotation('link')->getValue();
+                    $relationMethod = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue();
                     $this->$relationMethod($schema, $table, $typeField);
                 } else if (!$this->isClass($typeField)) {
                     $this->addNormalColumn($typeField, $entity, $table, $property);
@@ -167,15 +167,15 @@ class Maintainer
         $propertyName      = $property->getName();
         $options['length'] = 255;
         foreach ($annotations as $name => $value) {
-            if ($name !== 'var' && $name !== 'text') {
+            if ($name !== AnnotationsName::P_VAR && $name !== AnnotationsName::P_TEXT) {
                 $options[$name] = $value;
             }
             $entityInstance = new $entity;
             if (
                 $property->getValue($entityInstance)
-                || Annotation::of($entity, $propertyName)->hasAnnotation('default')
+                || Annotation::of($entity, $propertyName)->hasAnnotation(AnnotationsName::P_DEFAULT)
             ) {
-                $defaultMethod = Annotation::of($entity, $propertyName)->getAnnotation('default')->getValue();
+                $defaultMethod = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_DEFAULT)->getValue();
                 if (method_exists($entity, $defaultMethod)) {
                     $value = $entityInstance->$defaultMethod();
                 } else {
@@ -210,7 +210,7 @@ class Maintainer
     {
         $fieldName  = $property->getName();
         $annotation = Annotation::of($entity, $property->getName());
-        if ($typeField === Type::STRING && $annotation->hasAnnotation('text')) {
+        if ($typeField === Type::STRING && $annotation->hasAnnotation(AnnotationsName::P_TEXT)) {
             $typeField = Type::TEXT;
         }
         $options = $this->addOptions($property, $entity, $annotation->getAnnotations());
