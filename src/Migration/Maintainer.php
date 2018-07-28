@@ -15,6 +15,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use TuxBoy\Annotation\Annotation;
+use TuxBoy\Annotation\AnnotationsName;
 
 /**
  * Class Maintainer
@@ -71,11 +72,20 @@ class Maintainer
      * @param Schema $schema
      * @param string $className
      * @return Table (ex: Post => posts)
+     * @throws ReflectionException
      * @throws SchemaException
+     * @throws \PhpDocReader\AnnotationException
      */
     public function getTableName(Schema $schema, string $className): Table
     {
-        $tableName = Inflector::get()->pluralize(strtolower($className));
+        if (Annotation::of($className)->hasAnnotation(AnnotationsName::C_STORE_NAME)) {
+            $tableName = Annotation::of($className)
+                ->getAnnotation(AnnotationsName::C_STORE_NAME)
+                ->getValue();
+        } else {
+            $class = new ReflectionClass($className);
+            $tableName = Inflector::get()->pluralize(strtolower($class->getShortName()));
+        }
         return $schema->hasTable($tableName) ? $schema->getTable($tableName) : $schema->createTable($tableName);
     }
 
@@ -104,7 +114,7 @@ class Maintainer
         foreach ($this->entities as $entity) {
             $schema          = clone $currentSchema;
             $reflectionClass = new ReflectionClass($entity);
-            $table           = $this->getTableName($schema, $reflectionClass->getShortName());
+            $table           = $this->getTableName($schema, $entity);
             $this->addPrimaryColumn($table);
             foreach ($reflectionClass->getProperties() as $property) {
                 $propertyName = $property->getName();
@@ -262,7 +272,6 @@ class Maintainer
     /**
      * @param string $className
      * @return string l'équivalent du nom de la classe passé en paramètre en clé étrangère (Category => category_id)
-     * @throws ReflectionException
      */
     public function classToForeignKey(string $className): string
     {

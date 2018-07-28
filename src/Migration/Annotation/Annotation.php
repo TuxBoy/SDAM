@@ -49,7 +49,7 @@ class Annotation
      * @param string|null $propertyName
      * @throws ReflectionException
      */
-    public function __construct($argument, string $propertyName = null)
+    public function __construct($argument, ?string $propertyName = null)
     {
         $this->argument     = is_string($argument) ? new ReflectionClass($argument) : $argument;
         $this->propertyName = $propertyName;

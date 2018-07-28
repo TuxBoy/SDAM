@@ -2,7 +2,6 @@
 namespace UnitTest\Annotation;
 
 use TuxBoy\Annotation\Annotation;
-use UnitTest\Fixtures\Category;
 use UnitTest\Fixtures\Post;
 
 class AnnotationTest extends \PHPUnit\Framework\TestCase
