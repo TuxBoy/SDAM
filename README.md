@@ -61,6 +61,8 @@ namespace App\Entity;
 
 /**
  * Post
+ *
+ * @storeName custom_table_name
  */
 class Post
 {
