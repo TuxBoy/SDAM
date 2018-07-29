@@ -8,8 +8,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "SDAM\\": "src/Migration",
-            "App\\": "src/"
+            "SDAM\\": "src/",
+            "App\\": "example/"
         }
     },
     "autoload-dev": {
