@@ -174,6 +174,18 @@ class Annotation
     }
 
     /**
+     * @return string
+     * @throws ReflectionException
+     * @throws \PhpDocReader\AnnotationException
+     */
+    public function getObjectVar(): ?string
+    {
+        return $this->reader->getPropertyClass(
+            new \ReflectionProperty($this->argument->getName(), $this->propertyName)
+        );
+    }
+
+    /**
      * @param $argument string|ReflectionClass
      * @param null|string $propertyName
      * @return Annotation

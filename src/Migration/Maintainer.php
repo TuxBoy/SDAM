@@ -85,7 +85,7 @@ class Maintainer
                 ->getAnnotation(AnnotationsName::C_STORE_NAME)
                 ->getValue();
         } else {
-            $class = new ReflectionClass($className);
+            $class     = new ReflectionClass($className);
             $tableName = Inflector::get()->pluralize(strtolower($class->getShortName()));
         }
         return $schema->hasTable($tableName) ? $schema->getTable($tableName) : $schema->createTable($tableName);
@@ -109,6 +109,7 @@ class Maintainer
      * @throws DBALException
      * @throws ReflectionException
      * @throws \PhpDocReader\AnnotationException
+     * @throws \Throwable
      */
     public function run(): void
     {
@@ -128,9 +129,11 @@ class Maintainer
                     method_exists($this, Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue()) &&
                     $isStored
                 ) {
-                    $relationMethod = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue();
-                    $this->$relationMethod($schema, $table, $typeField);
-                } else if (!$this->isClass($typeField) && $isStored) {
+                    $annotation     = Annotation::of($entity, $propertyName);
+                    $relationMethod = $annotation->getAnnotation(AnnotationsName::P_LINK)->getValue();
+                    $fullClassName  = $annotation->getObjectVar();
+                    $this->$relationMethod($schema, $table, $fullClassName, $typeField);
+                } else if (!$this->isClass($typeField) && $isStored && !$this->isForeignKey($propertyName)) {
                     $this->addNormalColumn($typeField, $entity, $table, $property);
                 }
             }
@@ -141,15 +144,17 @@ class Maintainer
                 $this->dropColumn($properties, $table);
             }
             $migrationQueries = $currentSchema->getMigrateToSql($schema, $this->connection->getDatabasePlatform());
-            foreach ($migrationQueries as $query) {
-                try {
-                    $this->connection->executeQuery($query);
-                    file_put_contents('php://stdout', "The {$table->getName()} table has success created");
+            $this->connection->transactional(function () use ($migrationQueries, $table) {
+                foreach ($migrationQueries as $query) {
+                    try {
+                        $this->connection->executeQuery($query);
+                        file_put_contents('php://stdout', "The {$table->getName()} table has success created");
+                    }
+                    catch (SchemaException $exception) {
+                        file_put_contents('php://stdout', $exception->getMessage());
+                    }
                 }
-                catch (SchemaException $exception) {
-                    file_put_contents('php://stdout', $exception->getMessage());
-                }
-            }
+            });
         }
     }
 
@@ -252,16 +257,17 @@ class Maintainer
      * @param Table $table
      * @param string $className
      *
+     * @param string $shortClassName
      * @return string Retourne le nom du champ
      * @throws ReflectionException
      * @throws SchemaException
      * @throws \PhpDocReader\AnnotationException
      */
-    public function belongsTo(Schema $schema, Table $table, string $className): string
+    public function belongsTo(Schema $schema, Table $table, string $className, string $shortClassName): string
     {
-        $field = $this->classToForeignKey($className);
+        $field = $this->classToForeignKey($shortClassName);
         if ($this->isForeignKey($field) && !$table->hasColumn($field)) {
-            // Récupère la table sur la quelle la clé étrangère fait référence
+            // The table to which the foreign key refers
             $foreignTable = $this->getTableName($schema, $className);
             $this->addPrimaryColumn($foreignTable);
             $options['unsigned'] = true;
@@ -314,6 +320,9 @@ class Maintainer
         if (isset($columns['id'])) {
             unset($columns['id']);
         }
+        $columns = array_filter($columns, function (Column $column) {
+            return !$this->isForeignKey($column->getName());
+        });
         $arrayProperties = [];
         array_map(function (ReflectionProperty $property) use (&$arrayProperties) {
             $arrayProperties[$property->getName()] = $property->getName();
