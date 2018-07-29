@@ -1,6 +1,7 @@
 <?php
 namespace TuxBoy;
 
+use DateTime;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
@@ -124,6 +125,9 @@ class Maintainer
                 $propertyName = $property->getName();
                 $typeField    = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_VAR)->getValue();
                 $isStored     = $this->isStoredProperty($entity, $propertyName);
+                if ($typeField === DateTime::class || $typeField === '\DateTime' && $isStored) {
+                    $this->addNormalColumn('datetime', $entity, $table, $property);
+                }
                 if (
                     Annotation::of($entity, $propertyName)->hasAnnotation(AnnotationsName::P_LINK) &&
                     method_exists($this, Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue()) &&

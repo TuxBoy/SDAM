@@ -16,7 +16,8 @@ abstract class AnnotationsName
      * boolean : TINYINT
      * integer : INT
      *
-     * @var string|boolean
+     * @var string|boolean|datetime
+     * @see https://www.doctrine-project.org/projects/doctrine-dbal/en/2.7/reference/types.html#types
      */
     const P_VAR = 'var';
 
