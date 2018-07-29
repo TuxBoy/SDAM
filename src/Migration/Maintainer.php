@@ -69,7 +69,7 @@ class Maintainer
     }
 
     /**
-     * Détermine le nom de la table via le nom de la classe et la plurialise
+     * Determine the name of the table via the class name and plurialize, or storeName annotation
      *
      * @param Schema $schema
      * @param string $className
@@ -104,7 +104,7 @@ class Maintainer
     }
 
     /**
-     * Le point de démarrage du maintener, c'est cette méthode qui déclanche toute le processus de migration
+     * The start point of the maintainer is this method that triggers the entire migration process
      *
      * @throws DBALException
      * @throws ReflectionException
@@ -175,7 +175,7 @@ class Maintainer
     }
 
     /**
-     * Rajoute des options, les options sont les arguments supplémentaires du champ (default, length...)
+     * Add options, the options are the additional arguments of the field (default, length...)
      *
      * @param ReflectionProperty $property
      * @param string $entity
@@ -245,8 +245,8 @@ class Maintainer
     }
 
     /**
-     * Créé une clé étrangère dans la table en question pour une relation simple avec suppression
-     * en cascade et met la champ en index.
+     * Create a foreign key in the table in question for a simple relationship
+     * with cascading deletion and put the field in index.
      *
      * @param Schema $schema
      * @param Table $table
