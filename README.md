@@ -12,7 +12,7 @@ There is a demo of use [here](https://github.com/TuxBoy/Migration-demo)
 ````json
 
     "require": {
-        "tuxboy/migration": "dev-master",
+        "tuxboy/sdam": "dev-master",
     },
     "repositories": [
         {
