@@ -1,10 +1,10 @@
 <?php
-namespace TuxBoy\Middleware;
+namespace SDAM\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TuxBoy\Config;
-use TuxBoy\Maintainer;
+use SDAM\Config;
+use SDAM\Maintainer;
 
 /**
  * MaintainerMiddleware

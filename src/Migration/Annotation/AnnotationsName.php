@@ -1,5 +1,5 @@
 <?php
-namespace TuxBoy\Annotation;
+namespace SDAM\Annotation;
 
 /**
  * AnnotationsName

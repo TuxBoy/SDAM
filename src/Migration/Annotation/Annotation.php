@@ -1,6 +1,6 @@
 <?php
 
-namespace TuxBoy\Annotation;
+namespace SDAM\Annotation;
 
 use Exception;
 use PhpDocReader\PhpDocReader;

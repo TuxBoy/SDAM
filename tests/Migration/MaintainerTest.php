@@ -9,13 +9,13 @@ class MaintainerTest extends \PHPUnit\Framework\TestCase
 
     public function testMaintainerConstruct()
     {
-        $maintainer = new \TuxBoy\Maintainer([FakeEntity::class]);
+        $maintainer = new \SDAM\Maintainer([FakeEntity::class]);
         $this->assertCount(1, $maintainer->entities);
     }
 
     /*public function testParseForeignKey()
     {
-        $maintainer = new \TuxBoy\Maintainer([FakeEntity::class]);
+        $maintainer = new \SDAM\Maintainer([FakeEntity::class]);
         $this->assertEquals('category_id', $maintainer->classToForeignKey(Category::class));
     }*/
 

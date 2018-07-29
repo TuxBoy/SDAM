@@ -8,7 +8,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "TuxBoy\\": "src/Migration"
+            "SDAM\\": "src/Migration",
+            "App\\": "src/"
         }
     },
     "autoload-dev": {

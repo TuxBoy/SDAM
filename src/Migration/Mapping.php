@@ -1,5 +1,5 @@
 <?php
-namespace TuxBoy;
+namespace SDAM;
 
 abstract class Mapping
 {

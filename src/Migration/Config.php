@@ -1,5 +1,5 @@
 <?php
-namespace TuxBoy;
+namespace SDAM;
 
 /**
  * Configuration
@@ -7,15 +7,15 @@ namespace TuxBoy;
  * Experimental class
  *
  * @example
- *  \TuxBoy\Config::DATABASE => [
+ *  \SDAM\Config::DATABASE => [
  *      'dbname'   => 'autoMigrate',
  *      'user'     => 'root',
  *      'password' => 'root',
  *      'host'     => 'localhost',
  *      'driver'   => 'pdo_mysql',
  *  ],
- *  \TuxBoy\Config::ENTITY_PATH     => 'App\Model\\',
- *  \TuxBoy\Config::AUTO_DROP_FIELD => false
+ *  \SDAM\Config::ENTITY_PATH     => 'App\Model\\',
+ *  \SDAM\Config::AUTO_DROP_FIELD => false
  */
 class Config
 {

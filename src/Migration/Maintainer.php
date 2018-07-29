@@ -1,5 +1,5 @@
 <?php
-namespace TuxBoy;
+namespace SDAM;
 
 use DateTime;
 use Doctrine\DBAL\Configuration;
@@ -16,13 +16,13 @@ use ICanBoogie\Inflector;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
-use TuxBoy\Annotation\Annotation;
-use TuxBoy\Annotation\AnnotationsName;
+use SDAM\Annotation\Annotation;
+use SDAM\Annotation\AnnotationsName;
 
 /**
  * Class Maintainer
  *
- * @package TuxBoy
+ * @package SDAM
  */
 class Maintainer
 {

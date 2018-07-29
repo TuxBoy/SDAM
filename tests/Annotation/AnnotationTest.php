@@ -1,7 +1,7 @@
 <?php
 namespace UnitTest\Annotation;
 
-use TuxBoy\Annotation\Annotation;
+use SDAM\Annotation\Annotation;
 use UnitTest\Fixtures\Category;
 use UnitTest\Fixtures\Post;
 
