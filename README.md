@@ -17,7 +17,7 @@ There is a demo of use [here](https://github.com/TuxBoy/Migration-demo)
     "repositories": [
         {
             "type": "vcs",
-            "url":  "git@github.com:tuxboy/migration.git"
+            "url":  "git@github.com:tuxboy/sdam.git"
         }
     ],
 ````
