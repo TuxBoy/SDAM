@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\DBAL\Schema\Table;
@@ -19,6 +20,7 @@ use TuxBoy\Annotation\AnnotationsName;
 
 /**
  * Class Maintainer
+ *
  * @package TuxBoy
  */
 class Maintainer
@@ -115,8 +117,9 @@ class Maintainer
             $schema          = clone $currentSchema;
             $reflectionClass = new ReflectionClass($entity);
             $table           = $this->getTableName($schema, $entity);
+            $properties      = $reflectionClass->getProperties();
             $this->addPrimaryColumn($table);
-            foreach ($reflectionClass->getProperties() as $property) {
+            foreach ($properties as $property) {
                 $propertyName = $property->getName();
                 $typeField    = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_VAR)->getValue();
                 if (
@@ -128,6 +131,12 @@ class Maintainer
                 } else if (!$this->isClass($typeField)) {
                     $this->addNormalColumn($typeField, $entity, $table, $property);
                 }
+            }
+            if (
+                !isset(Config::current()->params[Config::AUTO_DROP_FIELD])
+                || (Config::current()->params[Config::AUTO_DROP_FIELD] !== false)
+            ) {
+                $this->dropColumn($properties, $table);
             }
             $migrationQueries = $currentSchema->getMigrateToSql($schema, $this->connection->getDatabasePlatform());
             foreach ($migrationQueries as $query) {
@@ -230,8 +239,9 @@ class Maintainer
      * @param string $className
      *
      * @return string Retourne le nom du champ
-     * @throws DatabaseException
-     * @throws \Doctrine\DBAL\Schema\SchemaException
+     * @throws ReflectionException
+     * @throws SchemaException
+     * @throws \PhpDocReader\AnnotationException
      */
     public function belongsTo(Schema $schema, Table $table, string $className): string
     {
@@ -276,6 +286,32 @@ class Maintainer
     public function classToForeignKey(string $className): string
     {
         return mb_strtolower($className) . '_id';
+    }
+
+    /**
+     * @param ReflectionProperty[] $properties
+     * @param Table $table
+     * @return Table
+     */
+    private function dropColumn(array $properties, Table $table)
+    {
+        $columns = $table->getColumns();
+        // Unset primary key of array
+        if (isset($columns['id'])) {
+            unset($columns['id']);
+        }
+        $arrayProperties = [];
+        array_map(function (ReflectionProperty $property) use (&$arrayProperties) {
+            $arrayProperties[$property->getName()] = $property->getName();
+        }, $properties);
+        $arrayColumns = array_map(function (Column $column) {
+            return $column->getName();
+        }, $columns);
+        $dropColumns = array_diff($arrayColumns, $arrayProperties);
+        foreach ($dropColumns as $dropColumn) {
+            $table->dropColumn($dropColumn);
+        }
+        return $table;
     }
 
 }

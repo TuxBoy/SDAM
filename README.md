@@ -34,7 +34,8 @@ There is a demo of use [here](https://github.com/TuxBoy/Migration-demo)
             'host'     => 'localhost',
             'driver'   => 'pdo_mysql',
         ],
-        \TuxBoy\Config::ENTITY_PATH => 'App\Entity\\'
+        \TuxBoy\Config::ENTITY_PATH => 'App\Entity\\',
+        \TuxBoy\Config::AUTO_DROP_FIELD => false, // Optional (default value is true)
     ]
 );
 
