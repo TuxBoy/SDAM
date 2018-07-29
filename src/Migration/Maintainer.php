@@ -240,16 +240,16 @@ class Maintainer
      */
     private function addNormalColumn(string $typeField, string $entity, Table $table, ReflectionProperty $property): void
     {
-        $fieldName  = $property->getName();
+        $fieldName  = $this->getFieldName($property);
         $annotation = Annotation::of($entity, $property->getName());
         if ($typeField === Type::STRING && $annotation->hasAnnotation(AnnotationsName::P_TEXT)) {
             $typeField = Type::TEXT;
         }
         $options = $this->addOptions($property, $entity, $annotation->getAnnotations());
         if (!$table->hasColumn($fieldName)) {
-            $table->addColumn($property->getName(), $typeField, $options);
+            $table->addColumn($fieldName, $typeField, $options);
         } else {
-            $table->changeColumn($property->getName(), $options);
+            $table->changeColumn($fieldName, $options);
         }
     }
 
@@ -313,6 +313,17 @@ class Maintainer
     }
 
     /**
+     * Transform property name to field name (e. createdAt => created_at)
+     *
+     * @param ReflectionProperty $property
+     * @return string
+     */
+    private function getFieldName(ReflectionProperty $property): string
+    {
+        return Inflector::get()->underscore($property->getName());
+    }
+
+    /**
      * @param ReflectionProperty[] $properties
      * @param Table $table
      * @return Table
@@ -324,12 +335,14 @@ class Maintainer
         if (isset($columns['id'])) {
             unset($columns['id']);
         }
+        // Unset foreign key => field_id
         $columns = array_filter($columns, function (Column $column) {
             return !$this->isForeignKey($column->getName());
         });
         $arrayProperties = [];
         array_map(function (ReflectionProperty $property) use (&$arrayProperties) {
-            $arrayProperties[$property->getName()] = $property->getName();
+            $propertyName = $this->getFieldName($property);
+            $arrayProperties[$propertyName] = $propertyName;
         }, $properties);
         $arrayColumns = array_map(function (Column $column) {
             return $column->getName();
