@@ -80,6 +80,12 @@ class Post
     public $slug;
 
     /**
+     * @store false
+     * @var string
+     */
+    public $tmp_property;
+
+    /**
      * @text
      * @var string
      */

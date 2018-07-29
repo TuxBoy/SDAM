@@ -49,6 +49,13 @@ abstract class AnnotationsName
     const P_DEFAULT = 'default';
 
     /**
+     * Specifies that a property will not be persisted in database
+     *
+     * @store false|true
+     */
+    const P_STORE = 'store';
+
+    /**
      * Text value annotation, the name of the table that will be created
      *
      * @storeName table_name

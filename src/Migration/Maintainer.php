@@ -122,13 +122,15 @@ class Maintainer
             foreach ($properties as $property) {
                 $propertyName = $property->getName();
                 $typeField    = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_VAR)->getValue();
+                $isStored     = $this->isStoredProperty($entity, $propertyName);
                 if (
                     Annotation::of($entity, $propertyName)->hasAnnotation(AnnotationsName::P_LINK) &&
-                    method_exists($this, Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue())
+                    method_exists($this, Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue()) &&
+                    $isStored
                 ) {
                     $relationMethod = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue();
                     $this->$relationMethod($schema, $table, $typeField);
-                } else if (!$this->isClass($typeField)) {
+                } else if (!$this->isClass($typeField) && $isStored) {
                     $this->addNormalColumn($typeField, $entity, $table, $property);
                 }
             }
@@ -149,6 +151,18 @@ class Maintainer
                 }
             }
         }
+    }
+
+    /**
+     * @param string $entity
+     * @param string $propertyName
+     * @return bool true if the property may be persistent in database11
+     * @throws ReflectionException
+     * @throws \PhpDocReader\AnnotationException
+     */
+    private function isStoredProperty(string $entity, string $propertyName): bool
+    {
+        return !boolval(Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_STORE)->getValue());
     }
 
     /**
