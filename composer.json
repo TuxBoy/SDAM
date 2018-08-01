@@ -18,6 +18,7 @@
         }
     },
     "require": {
+        "php": ">=7.1.0",
         "php-di/phpdoc-reader": "^2.1",
         "icanboogie/inflector": "^1.4",
         "doctrine/dbal": "^2.7",
