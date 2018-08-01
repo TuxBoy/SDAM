@@ -3,17 +3,11 @@ namespace UnitTest\Fixtures;
 
 /**
  * Class FakeEntity
- * @storeName fakes
  */
-class FakeEntity
+class Simple
 {
     /**
      * @var string
      */
     public $name;
-
-    /**
-     * @var boolean
-     */
-    public $online;
 }

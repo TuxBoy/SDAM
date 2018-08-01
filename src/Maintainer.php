@@ -37,7 +37,7 @@ class Maintainer
     /**
      * @var Connection
      */
-    private $connection;
+    public $connection;
 
     /**
      * @var AbstractSchemaManager
