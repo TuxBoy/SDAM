@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/TuxBoy/Migration.svg?branch=master)](https://travis-ci.org/TuxBoy/Migration)
+[![Build Status](https://travis-ci.org/TuxBoy/SDAM.svg?branch=master)](https://travis-ci.org/TuxBoy/Migration)
 
 # SDAM (Simple Database Auto Migration) 
 
