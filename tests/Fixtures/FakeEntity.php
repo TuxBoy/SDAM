@@ -16,4 +16,10 @@ class FakeEntity
      * @var boolean
      */
     public $online;
+
+	/**
+	 * @link belongsTo
+	 * @var Simple
+	 */
+    public $simple;
 }
