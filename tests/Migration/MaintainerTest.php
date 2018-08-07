@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use SDAM\Config;
 use SDAM\Maintainer;
 use UnitTest\Fixtures\FakeEntity;
+use UnitTest\Fixtures\Post;
 use UnitTest\Fixtures\Simple;
 
 class MaintainerTest extends TestCase
@@ -40,40 +41,46 @@ class MaintainerTest extends TestCase
 	public function testMaintainerConstruct()
     {
         [$maintainer,] = $this->makeMaintainer(FakeEntity::class);
-        $this->assertCount(1, $maintainer->entities);
+		self::assertCount(1, $maintainer->entities);
     }
 
     public function testAddPrimaryKey()
 	{
 		[, $schemaManager] = $this->makeMaintainer(FakeEntity::class);
 		$columns = $schemaManager->listTableColumns('fakes');
-		$this->assertTrue(array_key_exists('id', $columns));
+		self::assertTrue(array_key_exists('id', $columns));
 	}
 
     public function testAddSimpleColumn()
 	{
 		[, $schemaManager] = $this->makeMaintainer(Simple::class);
 		$columns = $schemaManager->listTableColumns('simples');
-		$this->assertTrue(array_key_exists('name', $columns));
+		self::assertTrue(array_key_exists('name', $columns));
 
-		$this->assertEquals('string', $columns['name']->getType()->getName());
+		self::assertEquals('string', $columns['name']->getType()->getName());
 	}
 
     public function testAddBooleanColumn()
 	{
 		[, $schemaManager] = $this->makeMaintainer(FakeEntity::class);
 		$columns = $schemaManager->listTableColumns('fakes');
-		$this->assertTrue(array_key_exists('online', $columns));
+		self::assertTrue(array_key_exists('online', $columns));
 
-		$this->assertEquals(Type::BOOLEAN, $columns['online']->getType()->getName());
+		self::assertEquals(Type::BOOLEAN, $columns['online']->getType()->getName());
 	}
 
 	public function testAddBelongsToRelation()
 	{
 		/** @var $schemaManager AbstractSchemaManager */
-		[, $schemaManager] = $this->makeMaintainer([FakeEntity::class]);
+		[, $schemaManager] = $this->makeMaintainer(FakeEntity::class);
 		$columns = $schemaManager->listTableColumns('fakes');
-		$this->assertTrue(array_key_exists('simple_id', $columns));
+		self::assertTrue(array_key_exists('simple_id', $columns));
 	}
+
+	/*public function testAddBelongsToMany()
+	{
+		[, $schemaManager] = $this->makeMaintainer([FakeEntity::class, Post::class]);
+		self::assertTrue($schemaManager->tablesExist('fakes_posts'));
+	}*/
 
 }
