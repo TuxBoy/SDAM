@@ -15,7 +15,7 @@ abstract class Methods
 	 * @return bool
 	 * @throws \ReflectionException
 	 */
-	public static function isMethod(string $method): bool
+	public static function isMethod(?string $method = null): bool
 	{
 		$class = new \ReflectionClass(static::class);
 		return in_array($method, $class->getConstants());
