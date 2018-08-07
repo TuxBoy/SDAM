@@ -80,6 +80,11 @@ class Config
 		}
     }
 
+	/**
+	 * Returns all the configuration created via the method self::configure
+	 *
+	 * @return string[]
+	 */
     public function getParams(): array
 	{
 		// Without .env file
