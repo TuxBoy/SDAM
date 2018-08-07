@@ -1,5 +1,6 @@
 <?php
 namespace SDAM;
+use Dotenv\Dotenv;
 
 /**
  * Configuration
@@ -43,6 +44,8 @@ class Config
      */
     const AUTO_DROP_FIELD = 'auto_drop_field';
 
+    const ENV_FILE = 'env_file';
+
     /**
      * @var self
      */
@@ -51,9 +54,9 @@ class Config
     /**
      * @var string[]
      */
-    public $params = [];
+    private $params = [];
 
-    /**
+	/**
      * @return Config
      */
     public static function current(): self
@@ -70,6 +73,29 @@ class Config
     public function configure(array $params = []): void
     {
         $this->params = $params;
+		$envFile      = $this->params[static::ENV_FILE] ?? null;
+		if ($envFile) {
+			$dotenv = new Dotenv($envFile);
+			$dotenv->load();
+		}
     }
+
+    public function getParams(): array
+	{
+		// Without .env file
+		if (!isset($this->params[static::ENV_FILE])) {
+			return $this->params;
+		}
+		$params = [
+			static::DATABASE => [
+				'dbname'   => getenv('DB_DATABASE') ? getenv('DB_DATABASE') : 'test',
+				'user'     => getenv('DB_USERNAME') ? getenv('DB_USERNAME') : 'root',
+				'password' => getenv('DB_PASSWORD') ? getenv('DB_PASSWORD') : 'root',
+				'host'     => getenv('DB_HOST')     ? getenv('DB_HOST')     : 'localhost',
+				'driver'   => (getenv('DB_CONNECTION') === 'mysql') ? 'pdo_mysql' : 'mysql',
+			]
+		];
+		return array_merge($params, $this->params);
+	}
 
 }

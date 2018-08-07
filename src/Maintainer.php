@@ -59,7 +59,7 @@ class Maintainer
     public function __construct(array $entities = [])
     {
         $this->entities    = $entities;
-        $this->entity_path = Config::current()->params[Config::ENTITY_PATH] ?? 'App\Entity';
+        $this->entity_path = Config::current()->getParams()[Config::ENTITY_PATH] ?? 'App\Entity';
         try {
             $this->connection    = $this->connect();
             $this->schemaManager = $this->connection->getSchemaManager();
@@ -142,8 +142,8 @@ class Maintainer
                 }
             }
             if (
-                !isset(Config::current()->params[Config::AUTO_DROP_FIELD])
-                || (Config::current()->params[Config::AUTO_DROP_FIELD] !== false)
+                !isset(Config::current()->getParams()[Config::AUTO_DROP_FIELD])
+                || (Config::current()->getParams()[Config::AUTO_DROP_FIELD] !== false)
             ) {
                 $this->dropColumn($properties, $table);
             }
@@ -226,7 +226,7 @@ class Maintainer
     private function connect(): Connection
     {
         $config = new Configuration();
-        $params = Config::current()->params[Config::DATABASE] ?? ['url' => 'sqlite:///:memory:'];
+        $params = Config::current()->getParams()[Config::DATABASE] ?? ['url' => 'sqlite:///:memory:'];
         return DriverManager::getConnection($params, $config);
     }
 
