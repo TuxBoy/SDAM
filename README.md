@@ -33,8 +33,9 @@ There is a demo of use [here](https://github.com/TuxBoy/Migration-demo)
             'password' => '',
             'host'     => 'localhost',
             'driver'   => 'pdo_mysql',
-        ],
-        \SDAM\Config::ENTITY_PATH => 'App\Entity\\',
+        ], // OR use .env for the database config
+        \SDAM\Config::ENV_FILE        => 'path/your/.env'
+        \SDAM\Config::ENTITY_PATH     => 'App\Entity\\',
         \SDAM\Config::AUTO_DROP_FIELD => false, // Optional (default value is true)
     ]
 );
