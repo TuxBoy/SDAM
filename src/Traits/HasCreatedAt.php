@@ -10,6 +10,7 @@ trait HasCreatedAt
 {
 
     /**
+	 * @default now
      * @var DateTime
      */
     public $createdAt;

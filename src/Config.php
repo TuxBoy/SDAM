@@ -1,5 +1,6 @@
 <?php
 namespace SDAM;
+
 use Dotenv\Dotenv;
 
 /**

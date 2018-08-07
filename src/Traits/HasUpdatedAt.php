@@ -9,9 +9,10 @@ use DateTime;
 trait HasUpdatedAt
 {
 
-    /**
-     * @var DateTime
-     */
-    public $updatedAt;
+	/**
+	 * @default now
+	 * @var DateTime
+	 */
+	public $updatedAt;
 
 }

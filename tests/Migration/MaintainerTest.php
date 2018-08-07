@@ -74,7 +74,17 @@ class MaintainerTest extends TestCase
 		/** @var $schemaManager AbstractSchemaManager */
 		[, $schemaManager] = $this->makeMaintainer(FakeEntity::class);
 		$columns = $schemaManager->listTableColumns('fakes');
-		self::assertTrue(array_key_exists('simple_id', $columns));
+		self::assertArrayHasKey('simple_id', $columns);
+	}
+
+	public function testAddTimestampFieldWithDefaultValue()
+	{
+		/** @var $schemaManager AbstractSchemaManager */
+		[, $schemaManager] = $this->makeMaintainer(Simple::class);
+		$columns = $schemaManager->listTableColumns('simples');
+		self::assertArrayHasKey('created_at', $columns);
+
+		self::assertEquals(date('Y-m-d H:i:s'), $columns['created_at']->getDefault());
 	}
 
 }

@@ -18,6 +18,8 @@ use ReflectionException;
 use ReflectionProperty;
 use SDAM\Annotation\Annotation;
 use SDAM\Annotation\AnnotationsName;
+use SDAM\Method\ExecMethod;
+use SDAM\Method\Methods;
 
 /**
  * Class Maintainer
@@ -210,7 +212,9 @@ class Maintainer
                 $defaultMethod = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_DEFAULT)->getValue();
                 if (method_exists($entity, $defaultMethod)) {
                     $value = $entityInstance->$defaultMethod();
-                } else {
+                } else if (!method_exists($entity, $defaultMethod) && Methods::isMethod($defaultMethod)) {
+					$value = new ExecMethod($defaultMethod);
+				} else {
                     $value = $property->getValue($entityInstance);
                 }
                 $options['default'] = $value;

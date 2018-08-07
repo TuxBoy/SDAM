@@ -42,15 +42,16 @@ class MaintainerMiddleware
         $this->entities = $entities;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
-     * @return ResponseInterface
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \ReflectionException
-     * @throws \PhpDocReader\AnnotationException
-     */
+	/**
+	 * @param ServerRequestInterface $request
+	 * @param ResponseInterface $response
+	 * @param callable $next
+	 * @return ResponseInterface
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \ReflectionException
+	 * @throws \PhpDocReader\AnnotationException
+	 * @throws \Throwable
+	 */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
     {
         $maintainer = new Maintainer($this->entities);
