@@ -1,6 +1,8 @@
 <?php
 namespace SDAM\Annotation;
 
+use SDAM\Method\Methods;
+
 /**
  * AnnotationsName
  *
@@ -46,6 +48,7 @@ abstract class AnnotationsName
      * Text value annotation, take as parameter the method to execute to define a default value in the field
      *
      * @default defaultMethod
+	 * @see Methods const for default method
      */
     const P_DEFAULT = 'default';
 
