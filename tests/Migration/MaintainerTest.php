@@ -77,10 +77,4 @@ class MaintainerTest extends TestCase
 		self::assertTrue(array_key_exists('simple_id', $columns));
 	}
 
-	/*public function testAddBelongsToMany()
-	{
-		[, $schemaManager] = $this->makeMaintainer([FakeEntity::class, Post::class]);
-		self::assertTrue($schemaManager->tablesExist('fakes_posts'));
-	}*/
-
 }
