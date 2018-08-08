@@ -127,7 +127,7 @@ class Maintainer
                 $propertyName = $property->getName();
                 $typeField    = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_VAR)->getValue();
                 $isStored     = $this->isStoredProperty($entity, $propertyName);
-                if ($typeField === DateTime::class || $typeField === '\DateTime' && $isStored) {
+                if (($typeField === DateTime::class || $typeField === '\DateTime') && $isStored) {
                     $this->addNormalColumn('datetime', $entity, $table, $property);
                 }
                 if (
@@ -173,7 +173,8 @@ class Maintainer
      */
     private function isStoredProperty(string $entity, string $propertyName): bool
     {
-        return !boolval(Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_STORE)->getValue());
+        return !boolval(Annotation::of($entity, $propertyName)
+			->getAnnotation(AnnotationsName::P_STORE)->getValue());
     }
 
     /**
@@ -185,16 +186,17 @@ class Maintainer
         return class_exists($field);
     }
 
-    /**
-     * Add options, the options are the additional arguments of the field (default, length...)
-     *
-     * @param ReflectionProperty $property
-     * @param string $entity
-     * @param array $annotations
-     * @return string[]
-     * @throws ReflectionException
-     * @throws \PhpDocReader\AnnotationException
-     */
+	/**
+	 * Add options, the options are the additional arguments of the field (default, length...)
+	 *
+	 * @param ReflectionProperty $property
+	 * @param string $entity
+	 * @param array $annotations
+	 * @return string[]
+	 * @throws ReflectionException
+	 * @throws \PhpDocReader\AnnotationException
+	 * @throws Method\MethodNotExist
+	 */
     private function addOptions(ReflectionProperty $property, string $entity, array $annotations): array
     {
         $options           = [];
