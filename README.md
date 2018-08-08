@@ -98,3 +98,7 @@ class Post
 
 Just start the migration, either by a simple F5 if you have it enabled in your application (middleware) or other.
 The table will be created in your database.
+
+## Todo
+
+- [ ] Manage relationship belongsToMany
