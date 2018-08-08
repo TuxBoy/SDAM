@@ -8,7 +8,6 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
@@ -20,6 +19,7 @@ use SDAM\Annotation\Annotation;
 use SDAM\Annotation\AnnotationsName;
 use SDAM\Method\ExecMethod;
 use SDAM\Method\Methods;
+use SDAM\Relationship\Relationship;
 
 /**
  * Class Maintainer
@@ -53,7 +53,12 @@ class Maintainer
      */
     private $entity_path;
 
-    /**
+	/**
+	 * @var Tool
+	 */
+	private $tool;
+
+	/**
      * Maintainer constructor
      *
      * @param string[] $entities List des entitées a charger pour la migration
@@ -62,47 +67,13 @@ class Maintainer
     {
         $this->entities    = $entities;
         $this->entity_path = Config::current()->getParams()[Config::ENTITY_PATH] ?? 'App\Entity';
+        $this->tool        = new Tool();
         try {
             $this->connection    = $this->connect();
             $this->schemaManager = $this->connection->getSchemaManager();
         }
         catch (DBALException $exception) {
             echo $exception->getMessage();
-        }
-    }
-
-    /**
-     * Determine the name of the table via the class name and plurialize, or storeName annotation
-     *
-     * @param Schema $schema
-     * @param string $className
-     * @return Table (ex: Post => posts)
-     * @throws ReflectionException
-     * @throws SchemaException
-     * @throws \PhpDocReader\AnnotationException
-     */
-    public function getTableName(Schema $schema, string $className): Table
-    {
-        if (Annotation::of($className)->hasAnnotation(AnnotationsName::C_STORE_NAME)) {
-            $tableName = Annotation::of($className)
-                ->getAnnotation(AnnotationsName::C_STORE_NAME)
-                ->getValue();
-        } else {
-            $class     = new ReflectionClass($className);
-            $tableName = Inflector::get()->pluralize(strtolower($class->getShortName()));
-        }
-        return $schema->hasTable($tableName) ? $schema->getTable($tableName) : $schema->createTable($tableName);
-    }
-
-    /**
-     * @param Table $table
-     * @param string $primaryName
-     */
-    private function addPrimaryColumn(Table $table, string $primaryName = 'id'): void
-    {
-        if (!$table->hasPrimaryKey()) {
-            $table->addColumn($primaryName, 'integer', ['unsigned' => true, 'autoincrement' => true]);
-            $table->setPrimaryKey([$primaryName]);
         }
     }
 
@@ -120,26 +91,31 @@ class Maintainer
         foreach ($this->entities as $entity) {
             $schema          = clone $currentSchema;
             $reflectionClass = new ReflectionClass($entity);
-            $table           = $this->getTableName($schema, $entity);
+            $table           = $this->tool->getTableName($schema, $entity);
             $properties      = $reflectionClass->getProperties();
-            $this->addPrimaryColumn($table);
+            $this->tool->addPrimaryColumn($table);
             foreach ($properties as $property) {
                 $propertyName = $property->getName();
-                $typeField    = Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_VAR)->getValue();
-                $isStored     = $this->isStoredProperty($entity, $propertyName);
-                if (($typeField === DateTime::class || $typeField === '\DateTime') && $isStored) {
-                    $this->addNormalColumn('datetime', $entity, $table, $property);
-                }
-                if (
+                $typeField    = Annotation::of($entity, $propertyName)
+					->getAnnotation(AnnotationsName::P_VAR)
+					->getValue();
+                $typeField = str_replace('[]', '', $typeField);
+				$isStored     = $this->isStoredProperty($entity, $propertyName);
+				if (($typeField === DateTime::class || $typeField === '\DateTime') && $isStored) {
+					$this->addNormalColumn('datetime', $entity, $table, $property);
+				}
+				if (
                     Annotation::of($entity, $propertyName)->hasAnnotation(AnnotationsName::P_LINK) &&
-                    method_exists($this, Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue()) &&
                     $isStored
                 ) {
-                    $annotation     = Annotation::of($entity, $propertyName);
-                    $relationMethod = $annotation->getAnnotation(AnnotationsName::P_LINK)->getValue();
-                    $fullClassName  = $annotation->getObjectVar();
-                    $this->$relationMethod($schema, $table, $fullClassName, $typeField);
-                } else if (!$this->isClass($typeField) && $isStored && !$this->isForeignKey($propertyName)) {
+					$annotation    = Annotation::of($entity, $propertyName);
+					$relationClass = $annotation->getAnnotation(AnnotationsName::P_LINK)->getValue();
+					$relationClass = 'SDAM\\Relationship\\' . ucfirst($relationClass);
+					$fullClassName = $annotation->getObjectVar();
+					/** @var $relationship Relationship */
+					$relationship  = (new ReflectionClass($relationClass))->newInstanceArgs([$schema, $table, $fullClassName, $typeField]);
+					$relationship->getField();
+                } else if (!$this->isClass($typeField) && $isStored && !$this->tool->isForeignKey($propertyName)) {
                     $this->addNormalColumn($typeField, $entity, $table, $property);
                 }
             }
@@ -154,10 +130,10 @@ class Maintainer
                 foreach ($migrationQueries as $query) {
                     try {
                         $this->connection->executeQuery($query);
-                        file_put_contents('php://stdout', "The {$table->getName()} table has success created");
+                        //file_put_contents('php://stdout', "The {$table->getName()} table has success created");
                     }
                     catch (SchemaException $exception) {
-                        file_put_contents('php://stdout', $exception->getMessage());
+                        //file_put_contents('php://stdout', $exception->getMessage());
                     }
                 }
             });
@@ -236,14 +212,15 @@ class Maintainer
         return DriverManager::getConnection($params, $config);
     }
 
-    /**
-     * @param string $typeField
-     * @param string $entity
-     * @param Table $table
-     * @param ReflectionProperty $property
-     * @throws ReflectionException
-     * @throws \PhpDocReader\AnnotationException
-     */
+	/**
+	 * @param string $typeField
+	 * @param string $entity
+	 * @param Table $table
+	 * @param ReflectionProperty $property
+	 * @throws ReflectionException
+	 * @throws \PhpDocReader\AnnotationException
+	 * @throws Method\MethodNotExist
+	 */
     private function addNormalColumn(string $typeField, string $entity, Table $table, ReflectionProperty $property): void
     {
         $fieldName  = $this->getFieldName($property);
@@ -257,65 +234,6 @@ class Maintainer
         } else {
             $table->changeColumn($fieldName, $options);
         }
-    }
-
-    /**
-     * Create a foreign key in the table in question for a simple relationship
-     * with cascading deletion and put the field in index.
-     *
-     * @param Schema $schema
-     * @param Table $table
-     * @param string $className
-     *
-     * @param string $shortClassName
-     * @return string Retourne le nom du champ
-     * @throws ReflectionException
-     * @throws SchemaException
-     * @throws \PhpDocReader\AnnotationException
-     */
-    public function belongsTo(Schema $schema, Table $table, string $className, string $shortClassName): string
-    {
-        $field = $this->classToForeignKey($shortClassName);
-        if ($this->isForeignKey($field) && !$table->hasColumn($field)) {
-            // The table to which the foreign key refers
-            $foreignTable = $this->getTableName($schema, $className);
-            $this->addPrimaryColumn($foreignTable);
-            $options['unsigned'] = true;
-            $options['notnull']  = false;
-            $table->addColumn($field, 'integer', $options);
-            if (!$table->hasIndex($field . '_index')) {
-                $table->addIndex([$field], $field . '_index');
-            }
-            $table->addForeignKeyConstraint(
-                $this->getTableName($schema, $className),
-                [$field],
-                ['id'],
-                ['onDelete' => 'CASCADE'],
-                $field . '_contrain'
-            );
-        }
-        return $field;
-    }
-
-    /**
-     * True if the field is a foreign key (e. field_id).
-     *
-     * @param string $field
-     *
-     * @return bool
-     */
-    private function isForeignKey(string $field): bool
-    {
-        return (bool) (mb_substr($field, -3) === '_id');
-    }
-
-    /**
-     * @param string $className
-     * @return string l'équivalent du nom de la classe passé en paramètre en clé étrangère (Category => category_id)
-     */
-    public function classToForeignKey(string $className): string
-    {
-        return mb_strtolower($className) . '_id';
     }
 
     /**
@@ -343,7 +261,7 @@ class Maintainer
         }
         // Unset foreign key => field_id
         $columns = array_filter($columns, function (Column $column) {
-            return !$this->isForeignKey($column->getName());
+            return !$this->tool->isForeignKey($column->getName());
         });
         $arrayProperties = [];
         array_map(function (ReflectionProperty $property) use (&$arrayProperties) {
