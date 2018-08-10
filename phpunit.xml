@@ -4,8 +4,8 @@
         <directory>./tests</directory>
     </testsuite>
     <filter>
-        <whitelist proceessUncoveredFromWhitelist="true">
-            <directory suffic=".php">src/Migration</directory>
+        <whitelist>
+            <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
 </phpunit>

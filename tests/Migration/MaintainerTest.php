@@ -17,7 +17,8 @@ class MaintainerTest extends TestCase
 	{
 		parent::setUp();
 		Config::current()->configure([
-			Config::DATABASE => ['url' => 'sqlite:///:memory:']
+			Config::DATABASE    => ['url' => 'sqlite:///:memory:'],
+			Config::ENTITY_PATH => 'UnitTest\Fixtures'
 		]);
 	}
 
@@ -75,6 +76,16 @@ class MaintainerTest extends TestCase
 		[, $schemaManager] = $this->makeMaintainer(FakeEntity::class);
 		$columns = $schemaManager->listTableColumns('fakes');
 		self::assertArrayHasKey('simple_id', $columns);
+	}
+
+	public function testAddBelongsToManyRelation()
+	{
+		/** @var $schemaManager AbstractSchemaManager */
+		[, $schemaManager] = $this->makeMaintainer([FakeEntity::class]);
+		self::assertTrue($schemaManager->tablesExist('fakes_posts'));
+		$columns = $schemaManager->listTableColumns('fakes_posts');
+		self::assertArrayHasKey('post_id', $columns);
+		self::assertArrayHasKey('fake_id', $columns);
 	}
 
 	public function testAddTimestampFieldWithDefaultValue()

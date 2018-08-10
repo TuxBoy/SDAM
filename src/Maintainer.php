@@ -19,7 +19,8 @@ use SDAM\Annotation\Annotation;
 use SDAM\Annotation\AnnotationsName;
 use SDAM\Method\ExecMethod;
 use SDAM\Method\Methods;
-use SDAM\Relationship\Relationship;
+use SDAM\Relationship\BelongsTo;
+use SDAM\Relationship\BelongsToMany;
 
 /**
  * Class Maintainer
@@ -99,23 +100,21 @@ class Maintainer
                 $typeField    = Annotation::of($entity, $propertyName)
 					->getAnnotation(AnnotationsName::P_VAR)
 					->getValue();
-                $typeField = str_replace('[]', '', $typeField);
+                $typeField    = str_replace('[]', '', $typeField);
 				$isStored     = $this->isStoredProperty($entity, $propertyName);
 				if (($typeField === DateTime::class || $typeField === '\DateTime') && $isStored) {
 					$this->addNormalColumn('datetime', $entity, $table, $property);
 				}
-				if (
-                    Annotation::of($entity, $propertyName)->hasAnnotation(AnnotationsName::P_LINK) &&
-                    $isStored
-                ) {
+				if ($this->annotationIs($entity, $propertyName, 'belongsTo') && $isStored) {
 					$annotation    = Annotation::of($entity, $propertyName);
-					$relationClass = $annotation->getAnnotation(AnnotationsName::P_LINK)->getValue();
-					$relationClass = 'SDAM\\Relationship\\' . ucfirst($relationClass);
 					$fullClassName = $annotation->getObjectVar();
-					/** @var $relationship Relationship */
-					$relationship  = (new ReflectionClass($relationClass))->newInstanceArgs([$schema, $table, $fullClassName, $typeField]);
-					$relationship->getField();
-                } else if (!$this->isClass($typeField) && $isStored && !$this->tool->isForeignKey($propertyName)) {
+					(new BelongsTo($schema, $table, $fullClassName, $typeField))->create();
+                } elseif ($this->annotationIs($entity, $propertyName, 'belongsToMany') && $isStored) {
+					$fullClassName = Config::current()->getParams()[Config::ENTITY_PATH] . '\\' . $typeField;
+					$belongsToMany = new BelongsToMany($schema, $table, $fullClassName, $typeField);
+					$pivotTable    = $belongsToMany->createPivotTable();
+					$belongsToMany->setTable($pivotTable)->create();
+				} else if (!$this->isClass($typeField) && $isStored && !$this->tool->isForeignKey($propertyName)) {
                     $this->addNormalColumn($typeField, $entity, $table, $property);
                 }
             }
@@ -139,6 +138,20 @@ class Maintainer
             });
         }
     }
+
+	/**
+	 * @param string $entity
+	 * @param string $propertyName
+	 * @param string $value
+	 * @return bool
+	 * @throws ReflectionException
+	 * @throws \PhpDocReader\AnnotationException
+	 */
+    private function annotationIs($entity, string $propertyName, string $value): bool
+	{
+		return Annotation::of($entity, $propertyName)->hasAnnotation(AnnotationsName::P_LINK) &&
+		Annotation::of($entity, $propertyName)->getAnnotation(AnnotationsName::P_LINK)->getValue() === $value;
+	}
 
     /**
      * @param string $entity

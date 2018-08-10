@@ -22,4 +22,10 @@ class FakeEntity
 	 * @var Simple
 	 */
     public $simple;
+
+	/**
+	 * @link belongsToMany
+	 * @var Post[]
+	 */
+    public $posts;
 }
