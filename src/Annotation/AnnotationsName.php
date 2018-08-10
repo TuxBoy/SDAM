@@ -40,7 +40,7 @@ abstract class AnnotationsName
     /**
      * Text value annotation for the relation type
      *
-     * @link belongsTo
+     * @link belongsTo|belongsToMany
      */
     const P_LINK = 'link';
 
