@@ -101,4 +101,5 @@ The table will be created in your database.
 
 ## Todo
 
-- [ ] Manage relationship belongsToMany
+- [X] Manage relationship belongsToMany
+- [ ] Better manage the tables that already exist when creating (Delete php warning)
