@@ -3,7 +3,7 @@ namespace UnitTest\Migration;
 
 use PHPUnit\Framework\TestCase;
 use SDAM\Config;
-use SDAM\EntityAdapter;
+use SDAM\EntityAdapter\EntityAdapter;
 use UnitTest\Fixtures\Category;
 use UnitTest\Fixtures\Foo;
 use UnitTest\Fixtures\Post;

@@ -9,10 +9,10 @@ require __DIR__ . '/vendor/autoload.php';
        'host'     => 'localhost',
        'driver'   => 'pdo_mysql',
    ],
-   \SDAM\Config::ENTITY_PATH     => 'App\Entity',
+   \SDAM\Config::ENTITY_PATH => 'App\Entity',
 ]);
 
-$maintainer = new \SDAM\Maintainer([\App\Entity\Question::class, \App\Entity\Response::class]);
+$maintainer = new \SDAM\Maintainer(new \SDAM\EntityAdapter\EntityAdapter(__DIR__ . '/example/Entity', [\App\Entity\Question::class]));
 try {
 	$maintainer->run();
 	echo 'Maintainer run';

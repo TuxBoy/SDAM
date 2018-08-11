@@ -17,6 +17,7 @@ use ReflectionException;
 use ReflectionProperty;
 use SDAM\Annotation\Annotation;
 use SDAM\Annotation\AnnotationsName;
+use SDAM\EntityAdapter\EntityAdapterInterface;
 use SDAM\Method\ExecMethod;
 use SDAM\Method\Methods;
 use SDAM\Relationship\BelongsTo;
@@ -31,8 +32,6 @@ class Maintainer
 {
 
     /**
-     * Toutes les entitées renseignées pour faire la migration
-     *
      * @var string[]
      */
     public $entities;
@@ -60,13 +59,14 @@ class Maintainer
 	private $tool;
 
 	/**
-     * Maintainer constructor
-     *
-     * @param string[] $entities List des entitées a charger pour la migration
-     */
-    public function __construct(array $entities = [])
+	 * Maintainer constructor
+	 *
+	 * @param string[] $entities
+	 * @param EntityAdapterInterface $entityAdapter
+	 */
+    public function __construct(array $entities = [], ?EntityAdapterInterface $entityAdapter = null)
     {
-        $this->entities    = $entities;
+        $this->entities    = empty($entities) ? $entityAdapter->toArray() : $entities;
         $this->entity_path = Config::current()->getParams()[Config::ENTITY_PATH] ?? 'App\Entity';
         $this->tool        = new Tool();
         try {

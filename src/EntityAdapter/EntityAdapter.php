@@ -1,22 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tuxboy
- * Date: 11/08/18
- * Time: 14:49
- */
+namespace SDAM\EntityAdapter;
 
-namespace SDAM;
-
-
-use Countable;
+use SDAM\Config;
 
 /**
  * Class EntityAdapter
  *
  * @package SDAM
  */
-class EntityAdapter implements Countable
+class EntityAdapter implements EntityAdapterInterface
 {
 	/**
 	 * @var string
