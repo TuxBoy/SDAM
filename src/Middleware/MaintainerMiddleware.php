@@ -36,7 +36,7 @@ class MaintainerMiddleware
                 'host'     => 'localhost',
                 'driver'   => 'pdo_mysql',
             ],
-            Config::ENTITY_PATH => 'App\Model\\'
+            Config::ENTITY_PATH => 'App\Entity'
         ], $config);
         Config::current()->configure($defaultConfig);
         $this->entities = $entities;
