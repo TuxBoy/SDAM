@@ -4,6 +4,7 @@ namespace SDAM\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use SDAM\Config;
+use SDAM\EntityAdapter\EntityAdapterInterface;
 use SDAM\Maintainer;
 
 /**
@@ -21,13 +22,15 @@ class MaintainerMiddleware
         //...
     ];
 
-    /**
-     * MaintainerMiddleware constructor
-     * @param array $entities
-     * @param array $config
-     */
-    public function __construct(array $entities, array $config = [])
-    {
+	/**
+	 * MaintainerMiddleware constructor
+	 * @param array $entities // TODO Delete entities parameters for the EntityAdapter (compatibility)
+	 * @param EntityAdapterInterface $entityAdapter
+	 * @param array $config
+	 */
+    public function __construct(
+    	array $entities = [], ?EntityAdapterInterface $entityAdapter = null, array $config = []
+	) {
         $defaultConfig = array_merge([
             Config::DATABASE => [
                 'dbname'   => 'autoMigrate',
@@ -39,7 +42,7 @@ class MaintainerMiddleware
             Config::ENTITY_PATH => 'App\Entity'
         ], $config);
         Config::current()->configure($defaultConfig);
-        $this->entities = $entities;
+        $this->entities = empty($entities) ? $entityAdapter->toArray() : $entities;
     }
 
 	/**
