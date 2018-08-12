@@ -24,13 +24,12 @@ class MaintainerMiddleware
 
 	/**
 	 * MaintainerMiddleware constructor
-	 * @param array $entities // TODO Delete entities parameters for the EntityAdapter (compatibility)
+	 *
 	 * @param EntityAdapterInterface $entityAdapter
 	 * @param array $config
 	 */
-    public function __construct(
-    	array $entities = [], ?EntityAdapterInterface $entityAdapter = null, array $config = []
-	) {
+    public function __construct(EntityAdapterInterface $entityAdapter, array $config = [])
+	{
         $defaultConfig = array_merge([
             Config::DATABASE => [
                 'dbname'   => 'autoMigrate',
@@ -42,7 +41,7 @@ class MaintainerMiddleware
             Config::ENTITY_PATH => 'App\Entity'
         ], $config);
         Config::current()->configure($defaultConfig);
-        $this->entities = empty($entities) ? $entityAdapter->toArray() : $entities;
+        $this->entities = $entityAdapter->toArray();
     }
 
 	/**
