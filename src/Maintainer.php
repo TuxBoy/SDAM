@@ -228,7 +228,7 @@ class Maintainer
     private function connect(): Connection
     {
         $config = new Configuration();
-        $params = Config::current()->getParams()[Config::DATABASE] ?? ['url' => 'sqlite:///:memory:'];
+        $params = Config::current()->getParams()[Config::DATABASE] ?? [];
         return DriverManager::getConnection($params, $config);
     }
 
