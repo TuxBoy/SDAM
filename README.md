@@ -22,6 +22,12 @@ There is a demo of use [here](https://github.com/TuxBoy/Migration-demo)
     ],
 ````
 
+OR with packagist
+
+```bash
+$ composer require tuxboy/sdam
+```
+
 ## How to use it
 
 ````php

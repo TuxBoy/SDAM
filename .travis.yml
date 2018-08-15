@@ -21,7 +21,7 @@ before_script:
   - composer install -n
 
 script:
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --colors --coverage-text
 
 after_success:
   - travis_retry php vendor/bin/coveralls
