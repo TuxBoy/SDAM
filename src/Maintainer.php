@@ -18,6 +18,7 @@ use ReflectionProperty;
 use SDAM\Annotation\Annotation;
 use SDAM\Annotation\AnnotationsName;
 use SDAM\EntityAdapter\EntityAdapterInterface;
+use SDAM\Factory\Factory;
 use SDAM\Method\ExecMethod;
 use SDAM\Method\Methods;
 use SDAM\Relationship\BelongsTo;
@@ -86,7 +87,7 @@ class Maintainer
      * @throws \PhpDocReader\AnnotationException
      * @throws \Throwable
      */
-    public function run(): void
+    public function run()
     {
         $currentSchema = $this->schemaManager->createSchema();
         foreach ($this->entities as $entity) {
@@ -117,6 +118,11 @@ class Maintainer
 				} else if (!$this->isClass($typeField) && $isStored && !$this->tool->isForeignKey($propertyName)) {
                     $this->addNormalColumn($typeField, $entity, $table, $property);
                 }
+
+                if (Annotation::of($entity)->hasAnnotation(AnnotationsName::C_FACTORY)) {
+					$factoryValue = Annotation::of($entity)->getAnnotation(AnnotationsName::C_FACTORY)->getValue();
+					return (new Factory($this->connection, $entity, $factoryValue))->generate($schema);
+				}
             }
             if (
                 !isset(Config::current()->getParams()[Config::AUTO_DROP_FIELD])
@@ -137,6 +143,7 @@ class Maintainer
                 }
             });
         }
+        return null;
     }
 
 	/**

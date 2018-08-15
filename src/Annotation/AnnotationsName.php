@@ -66,4 +66,11 @@ abstract class AnnotationsName
      */
     const C_STORE_NAME = 'storeName';
 
+	/**
+	 * Generates fake data in the database
+	 *
+	 * @factory className (full path to the class with namespace)
+	 */
+    const C_FACTORY = 'factory';
+
 }

@@ -12,7 +12,7 @@ require __DIR__ . '/vendor/autoload.php';
    \SDAM\Config::ENTITY_PATH => 'App\Entity',
 ]);
 
-$maintainer = new \SDAM\Maintainer(new \SDAM\EntityAdapter\EntityAdapter(__DIR__ . '/example/Entity', [\App\Entity\Question::class]));
+$maintainer = new \SDAM\Maintainer([], new \SDAM\EntityAdapter\EntityAdapter(__DIR__ . '/example/Entity'));
 try {
 	$maintainer->run();
 	echo 'Maintainer run';

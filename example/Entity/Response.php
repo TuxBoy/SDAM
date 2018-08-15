@@ -3,6 +3,9 @@ namespace App\Entity;
 
 use DateTime;
 
+/**
+ * Class Response
+ */
 class Response
 {
 

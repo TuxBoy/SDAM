@@ -7,6 +7,7 @@ use SDAM\Traits\HasTimestamp;
  * Class Question
  *
  * @storeName questions_table
+ * @factory App\Factory\QuestionFactory
  */
 class Question
 {
