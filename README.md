@@ -103,3 +103,4 @@ The table will be created in your database.
 
 - [X] Manage relationship belongsToMany
 - [ ] Better manage the tables that already exist when creating (Delete php warning)
+- [ ] Completed the factory system.
