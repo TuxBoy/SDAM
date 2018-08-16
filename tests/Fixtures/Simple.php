@@ -13,4 +13,17 @@ class Simple
      * @var string
      */
     public $name;
+
+	/**
+	 * @var string
+	 */
+	private $private;
+
+	/**
+	 * @return string|null
+	 */
+	public function getPrivate(): ?string
+	{
+		return $this->private;
+	}
 }

@@ -97,6 +97,9 @@ class Maintainer
             $properties      = $reflectionClass->getProperties();
             $this->tool->addPrimaryColumn($table);
             foreach ($properties as $property) {
+            	if ($property->isPrivate()) {
+            		$property->setAccessible(true);
+				}
                 $propertyName = $property->getName();
                 $typeField    = Annotation::of($entity, $propertyName)
 					->getAnnotation(AnnotationsName::P_VAR)

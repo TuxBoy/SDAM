@@ -136,4 +136,15 @@ class MaintainerTest extends TestCase
 		self::assertContains($entity, $maintainer->entities);
 	}
 
+	/**
+	 * @test
+	 */
+	public function maintainer_with_private_property()
+	{
+		/** @var $schemaManager AbstractSchemaManager */
+		[, $schemaManager] = $this->makeMaintainer(Simple::class);
+		$columns = $schemaManager->listTableColumns('simples');
+		self::assertArrayHasKey('private', $columns);
+	}
+
 }
