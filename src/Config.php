@@ -76,8 +76,7 @@ class Config
         $this->params = $params;
 		$envFile      = $this->params[static::ENV_FILE] ?? null;
 		if ($envFile) {
-			$dotenv = new Dotenv($envFile);
-			$dotenv->load();
+			(new Dotenv($envFile))->load();
 		}
     }
 
@@ -92,15 +91,18 @@ class Config
 		if (!isset($this->params[static::ENV_FILE])) {
 			return $this->params;
 		}
-		$params = [
-			static::DATABASE => [
+		if (getenv('DATABASE_URL')) {
+			$databaseConfig = ['url' => getenv('DATABASE_URL')];
+		} else {
+			$databaseConfig = [
 				'dbname'   => getenv('DB_DATABASE') ? getenv('DB_DATABASE') : 'test',
 				'user'     => getenv('DB_USERNAME') ? getenv('DB_USERNAME') : 'root',
 				'password' => getenv('DB_PASSWORD') ? getenv('DB_PASSWORD') : 'root',
 				'host'     => getenv('DB_HOST')     ? getenv('DB_HOST')     : 'localhost',
 				'driver'   => (getenv('DB_CONNECTION') === 'mysql') ? 'pdo_mysql' : 'mysql',
-			]
-		];
+			];
+		}
+		$params = [static::DATABASE => $databaseConfig];
 		return array_merge($params, $this->params);
 	}
 
