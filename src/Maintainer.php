@@ -75,7 +75,7 @@ class Maintainer
             $this->schemaManager = $this->connection->getSchemaManager();
         }
         catch (DBALException $exception) {
-            echo $exception->getMessage();
+            die($exception->getMessage());
         }
     }
 
