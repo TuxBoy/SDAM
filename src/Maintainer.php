@@ -166,7 +166,7 @@ class Maintainer
 	 * @param string $propertyName
 	 * @param string $value
 	 * @return bool
-	 * @throws ReflectionException
+	 * @throws ReflectionException|\Exception
 	 * @throws \PhpDocReader\AnnotationException
 	 */
 	private function annotationIs($entity, string $propertyName, string $value): bool
@@ -181,7 +181,7 @@ class Maintainer
 	 * @param string $propertyName
 	 * @return bool true if the property may be persistent in database11
 	 * @throws ReflectionException
-	 * @throws \PhpDocReader\AnnotationException
+	 * @throws \PhpDocReader\AnnotationException|\Exception
 	 */
 	private function isStoredProperty(string $entity, string $propertyName): bool
 	{
@@ -209,7 +209,7 @@ class Maintainer
 	 * @return string[]
 	 * @throws ReflectionException
 	 * @throws \PhpDocReader\AnnotationException
-	 * @throws Method\MethodNotExist
+	 * @throws Method\MethodNotExist|\Exception
 	 */
 	private function addOptions(ReflectionProperty $property, string $entity, array $annotations): array
 	{
@@ -264,7 +264,7 @@ class Maintainer
 	 * @param ReflectionProperty $property
 	 * @throws ReflectionException
 	 * @throws \PhpDocReader\AnnotationException
-	 * @throws Method\MethodNotExist
+	 * @throws Method\MethodNotExist|\Exception
 	 */
 	private function addNormalColumn(
 		string $typeField, string $entity, Table $table, ReflectionProperty $property

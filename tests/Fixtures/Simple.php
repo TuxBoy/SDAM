@@ -25,7 +25,6 @@ class Simple
 	 */
 	public $field_null;
 
-
 	/**
 	 * @return string|null
 	 */
