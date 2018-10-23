@@ -147,4 +147,19 @@ class MaintainerTest extends TestCase
 		self::assertArrayHasKey('private', $columns);
 	}
 
+	/**
+	 * @test
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \PhpDocReader\AnnotationException
+	 * @throws \ReflectionException
+	 * @throws \Throwable
+	 */
+	public function with_nullable_field()
+	{
+		/** @var $schemaManager AbstractSchemaManager */
+		[, $schemaManager] = $this->makeMaintainer(Simple::class);
+		$columns = $schemaManager->listTableColumns('simples');
+		self::assertFalse($columns['field_null']->getNotnull());
+	}
+
 }
